@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Centro Anti-Alibi · Scuola Sacra Famiglia</title>
+<title>Anti-Alibi · Scuola Sacra Famiglia</title>
 <style>
   :root {
     --blu: #143c8c;
@@ -50,7 +50,7 @@
   .main { flex: 1 1 auto; min-height: 0; }
 
   /* ---- SCHERMATE INTRO / FINALE ---- */
-  .centrata { height: 100%; display: flex; align-items: center; justify-content: center; padding: 30px; }
+  .centrata { height: 100%; display: flex; align-items: center; justify-content: center; padding: 30px; overflow-y: auto; }
   .pannello-intro {
     background: #fff; border-radius: var(--radius); box-shadow: var(--ombra);
     max-width: 760px; padding: 44px 50px; text-align: center;
@@ -70,14 +70,14 @@
   /* ---- PAGINA VIDEO (no scroll) ---- */
   .video-page { height: 100%; display: flex; gap: 22px; padding: 22px 24px; }
   .col-video {
-    flex: 1.25; min-width: 0; background: #0d1320; border-radius: var(--radius);
+    flex: 0 0 auto; height: 100%; aspect-ratio: 9 / 16; background: #0d1320; border-radius: var(--radius);
     display: flex; align-items: center; justify-content: center; overflow: hidden;
   }
-  .col-video video { max-height: 100%; max-width: 100%; width: auto; height: auto; border-radius: 6px; }
+  .col-video video { height: 100%; width: 100%; object-fit: contain; border-radius: 6px; }
 
   .col-attivita {
-    flex: 0 0 460px; max-width: 460px; background: #fff; border-radius: var(--radius);
-    box-shadow: var(--ombra); padding: 22px 26px; display: flex; flex-direction: column; min-height: 0;
+    flex: 1 1 auto; min-width: 0; background: #fff; border-radius: var(--radius);
+    box-shadow: var(--ombra); padding: 26px 34px; display: flex; flex-direction: column; min-height: 0;
   }
   .titolo-video { font-size: 21px; color: var(--blu); font-weight: 800; letter-spacing: -.3px; margin-bottom: 4px; }
   .sotto-video { font-size: 13px; color: var(--grigio); margin-bottom: 14px; }
@@ -109,8 +109,8 @@
   .chip:hover { background: var(--blu-chiaro); color: #fff; border-color: var(--blu-chiaro); }
 
   textarea {
-    flex: 1 1 auto; min-height: 90px; width: 100%; border: 2px solid #c8d3ee; border-radius: 12px;
-    padding: 12px 14px; font-family: inherit; font-size: 15px; resize: none; color: var(--testo);
+    flex: 1 1 auto; min-height: 200px; width: 100%; border: 2px solid #c8d3ee; border-radius: 12px;
+    padding: 16px 18px; font-family: inherit; font-size: 17px; line-height: 1.5; resize: none; color: var(--testo);
     background: #fff; margin-bottom: 8px;
   }
   textarea:focus { outline: none; border-color: var(--blu-chiaro); }
@@ -144,7 +144,7 @@
 
   <div class="topbar">
     <img src="logo.jpg" alt="Scuola Sacra Famiglia" />
-    <div class="tt">Centro Anti-Alibi<br><span>Dalla lamentela all'azione</span></div>
+    <div class="tt">Anti-Alibi<br><span>Dalla scusa all'obiettivo Scuola</span></div>
     <div class="spazio"></div>
     <div class="nav-dots" id="navDots"></div>
     <div class="conta-video" id="contaVideo"></div>
@@ -190,7 +190,7 @@ const VIDEOS = [
    ============================================================ */
 const FASI = [
   {
-    nome: "Comprensione",
+    nome: "Che cosa dice",
     domanda: "Che cosa hai capito da questo video? Qual è il messaggio?",
     spunti: [
       "Che cosa succede / che cosa si vede nel video?",
@@ -205,33 +205,33 @@ const FASI = [
     ]
   },
   {
-    nome: "Transfer",
-    domanda: "Quando, nella TUA vita, ti è successo qualcosa di simile?",
+    nome: "E io?",
+    domanda: "E a scuola? Quando ti è capitato di cercare un alibi o di mollare nello studio?",
     spunti: [
-      "A scuola, nello sport, con gli amici o in famiglia.",
-      "Una volta in cui anche tu hai pensato «non ce la faccio».",
-      "Che cosa hai fatto e come ti sei sentito in quel momento?"
+      "Pensa a una verifica, ai compiti o a una materia in cui hai pensato «tanto non ce la faccio».",
+      "A chi o a che cosa hai dato la colpa? (il prof, la sfortuna, «non sono portato»…)",
+      "Che cosa è successo poi? Come ti sei sentito?"
     ],
     avvii: [
-      "Una volta anche a me è successo che…",
-      "Mi ricordo di quando…",
-      "In quella situazione mi sono sentito…",
-      "Anche io, come nel video, ho…"
+      "A scuola mi è capitato che…",
+      "In quella materia ho pensato «non sono capace» e così…",
+      "Invece di studiare ho dato la colpa a…",
+      "Quella volta mi sono sentito…"
     ]
   },
   {
-    nome: "Assimilazione",
-    domanda: "Che cosa porti con te? Come affronterai le difficoltà da domani?",
+    nome: "La mia mossa",
+    domanda: "Trasforma tutto in energia per la scuola: qual è la tua mossa per la prossima difficoltà nello studio?",
     spunti: [
-      "Una cosa che vuoi ricordare.",
-      "Un piccolo cambiamento concreto che puoi fare.",
-      "Una frase-promessa per te stesso."
+      "Pensa a una situazione precisa: una verifica, i compiti, una materia difficile.",
+      "Scrivi la mossa nel formato «Quando… allora io…». Deve essere piccola e davvero fattibile.",
+      "Dove metterai la tua energia e la tua concentrazione?"
     ],
     avvii: [
-      "Da oggi, quando sarà difficile, proverò a…",
-      "Ho capito che la fatica…",
-      "La cosa che voglio ricordare è…",
-      "La mia promessa è che…"
+      "Quando avrò una verifica difficile, allora io…",
+      "Quando non avrò voglia di studiare, allora io…",
+      "La prossima volta che penserò «non ce la faccio», allora io…",
+      "Per concentrarmi meglio sullo studio, da domani…"
     ]
   }
 ];
@@ -298,18 +298,22 @@ function renderIntro() {
   main.innerHTML = `
     <div class="centrata">
       <div class="pannello-intro">
-        <h1>Smetti di restare nel problema.</h1>
-        <p>Tutti, almeno una volta, ci nascondiamo dietro una frase per non affrontare la fatica.
-        La chiamiamo <b>cultura dell'alibi</b>.</p>
+        <h1>Anti-Alibi</h1>
+        <p class="big" style="color:var(--blu);font-weight:700;">Che cos'è la <b>cultura dell'alibi</b>?</p>
+        <p>È l'abitudine di dare sempre la colpa <b>fuori da te</b>: «il prof spiega male», «la verifica era
+        troppo difficile», «non sono portato». L'alibi ti consola per un attimo, ma ti tiene fermo:
+        se la colpa è sempre di qualcun altro, allora <b>tu non puoi cambiare niente</b>.</p>
+        <p>L'allenatore <b>Julio Velasco</b> lo dice ai suoi atleti: i campioni non cercano alibi. Quando arriva
+        una palla storta non si lamentano — fanno comunque del loro meglio. <b>A scuola è uguale.</b></p>
         <div class="frasi-alibi">
-          <span>"...ma è impossibile!"</span><span>"non ce la faccio"</span>
-          <span>"è troppa fatica"</span><span>"è colpa degli altri"</span><span>"non sono portato"</span>
+          <span>"il prof spiega male"</span><span>"la verifica era troppo difficile"</span>
+          <span>"non sono portato"</span><span>"non ce la faccio"</span><span>"tanto è inutile"</span>
         </div>
-        <p>Guarderai dei video e per ognuno costruirai una riflessione in <b>3 fasi</b>:</p>
+        <p>Per ogni video farai un piccolo percorso in <b>3 passi</b>, fino a una mossa concreta per la <b>scuola</b>:</p>
         <div class="fasi-spiega">
-          <div class="f"><b>1 · Comprensione</b><small>Che cosa dice il video?</small></div>
-          <div class="f"><b>2 · Transfer</b><small>Quando è capitato a te?</small></div>
-          <div class="f"><b>3 · Assimilazione</b><small>Che cosa cambi da domani?</small></div>
+          <div class="f"><b>1 · Che cosa dice</b><small>Qual è il messaggio del video?</small></div>
+          <div class="f"><b>2 · E io?</b><small>Quando mi è capitato nello studio?</small></div>
+          <div class="f"><b>3 · La mia mossa</b><small>Come trasformo tutto in energia per la scuola?</small></div>
         </div>
         <button class="btn btn-primary big" style="flex:none;padding:14px 34px;" onclick="iniziaPercorso()">Inizia →</button>
       </div>
