@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Centro Anti-Alibi · Scuola Sacra Famiglia</title>
+<style>
+  :root {
+    --blu: #143c8c;
+    --blu-chiaro: #2563eb;
+    --blu-soft: #e8eefc;
+    --sfondo: #f4f6fb;
+    --testo: #142037;
+    --grigio: #6b7693;
+    --verde: #1d9d6b;
+    --ombra: 0 8px 28px rgba(20, 60, 140, 0.12);
+    --radius: 18px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--sfondo);
+    color: var(--testo);
+    line-height: 1.45;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 32px 64px; }
+
+  /* HEADER */
+  header.top {
+    display: flex; align-items: center; gap: 18px;
+    padding-bottom: 18px; border-bottom: 2px solid var(--blu-soft); margin-bottom: 28px;
+  }
+  header.top img { height: 64px; width: auto; }
+  header.top .titolo h1 { font-size: 26px; color: var(--blu); letter-spacing: -0.5px; }
+  header.top .titolo p { color: var(--grigio); font-size: 15px; }
+
+  /* STEPPER */
+  .stepper { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 34px; }
+  .step-node {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    flex: 0 0 auto; cursor: default; opacity: 0.5; transition: opacity .25s;
+  }
+  .step-node.attivo, .step-node.fatto, .step-node.disponibile { opacity: 1; }
+  .step-node.disponibile { cursor: pointer; }
+  .step-bubble {
+    width: 46px; height: 46px; border-radius: 50%; background: #fff; border: 3px solid #c8d3ee;
+    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: var(--grigio);
+  }
+  .step-node.attivo .step-bubble { border-color: var(--blu-chiaro); color: var(--blu-chiaro); box-shadow: 0 0 0 5px var(--blu-soft); }
+  .step-node.fatto .step-bubble { background: var(--verde); border-color: var(--verde); color: #fff; }
+  .step-label { font-size: 12.5px; color: var(--grigio); max-width: 120px; text-align: center; }
+  .step-line { height: 3px; width: 46px; background: #c8d3ee; border-radius: 3px; }
+  .step-line.fatto { background: var(--verde); }
+
+  /* CARD / SCHERMATE */
+  .schermata { display: none; animation: fade .35s ease; }
+  .schermata.visibile { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  .card { background: #fff; border-radius: var(--radius); box-shadow: var(--ombra); padding: 38px 44px; }
+  .card + .card { margin-top: 22px; }
+
+  .badge-tema { display: inline-block; background: var(--blu-soft); color: var(--blu); font-weight: 700;
+    font-size: 13px; padding: 6px 14px; border-radius: 999px; margin-bottom: 16px; letter-spacing: .3px; }
+
+  h2.tema { font-size: 30px; color: var(--blu); margin-bottom: 10px; letter-spacing: -0.5px; }
+  .alibi { font-size: 22px; font-style: italic; color: var(--testo); background: #fff7ed;
+    border-left: 5px solid #f59e0b; padding: 14px 20px; border-radius: 10px; margin: 18px 0 22px; }
+  .intro-tema { font-size: 17px; color: #3a4663; margin-bottom: 26px; }
+
+  /* VIDEO */
+  .video-blocco { margin-bottom: 26px; }
+  .video-blocco h3 { font-size: 18px; margin-bottom: 6px; color: var(--testo); }
+  .video-blocco p.desc { color: var(--grigio); font-size: 15px; margin-bottom: 12px; }
+  video { width: 100%; max-height: 62vh; background: #000; border-radius: 14px; display: block; }
+
+  /* SFIDA */
+  .sfida { background: var(--blu-soft); border-radius: 14px; padding: 24px 26px; margin-top: 10px; }
+  .sfida h3 { color: var(--blu); font-size: 19px; margin-bottom: 6px; }
+  .sfida p { color: #3a4663; font-size: 15.5px; margin-bottom: 14px; }
+  textarea {
+    width: 100%; min-height: 92px; border: 2px solid #c8d3ee; border-radius: 12px; padding: 14px 16px;
+    font-family: inherit; font-size: 16px; resize: vertical; color: var(--testo); background: #fff;
+  }
+  textarea:focus { outline: none; border-color: var(--blu-chiaro); }
+
+  /* BOTTONI */
+  .azioni { display: flex; justify-content: space-between; align-items: center; margin-top: 26px; gap: 14px; }
+  button {
+    font-family: inherit; font-size: 16px; font-weight: 700; border: none; border-radius: 12px;
+    padding: 14px 28px; cursor: pointer; transition: transform .12s, background .2s, box-shadow .2s;
+  }
+  button:active { transform: scale(0.97); }
+  .btn-primary { background: var(--blu-chiaro); color: #fff; box-shadow: 0 6px 16px rgba(37,99,235,.3); }
+  .btn-primary:hover { background: var(--blu); }
+  .btn-primary:disabled { background: #c8d3ee; box-shadow: none; cursor: not-allowed; color: #fff; }
+  .btn-ghost { background: transparent; color: var(--grigio); padding: 14px 10px; }
+  .btn-ghost:hover { color: var(--blu); }
+
+  /* HOME */
+  .hero { text-align: center; padding: 26px 20px 6px; }
+  .hero h2 { font-size: 40px; color: var(--blu); letter-spacing: -1px; margin-bottom: 14px; }
+  .hero .lead { font-size: 19px; color: #3a4663; max-width: 720px; margin: 0 auto 8px; }
+  .frasi-alibi { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 26px 0 30px; }
+  .frasi-alibi span { background: #fff7ed; color: #92400e; border: 1px dashed #f59e0b;
+    padding: 8px 16px; border-radius: 999px; font-style: italic; font-size: 15px; }
+  .mappa-livelli { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 8px 0 30px; }
+  .mini-livello { background: #fff; border-radius: 14px; box-shadow: var(--ombra); padding: 20px 18px; text-align: left; }
+  .mini-livello .n { font-size: 13px; font-weight: 700; color: var(--blu-chiaro); }
+  .mini-livello h4 { font-size: 16px; margin: 4px 0 6px; color: var(--blu); }
+  .mini-livello p { font-size: 13.5px; color: var(--grigio); }
+
+  /* FINALE */
+  .recap-item { background: #fff; border-left: 5px solid var(--verde); border-radius: 10px;
+    padding: 14px 18px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(20,60,140,.06); }
+  .recap-item .q { font-size: 13px; color: var(--blu); font-weight: 700; margin-bottom: 4px; }
+  .recap-item .a { font-size: 16px; color: var(--testo); }
+
+  footer.fine { text-align: center; margin-top: 40px; color: var(--grigio); font-size: 13px; }
+  footer.fine .docente { margin-top: 8px; }
+  .link-docente { background: none; border: none; color: #c0c8db; font-size: 12px; cursor: pointer; text-decoration: underline; }
+  .link-docente:hover { color: var(--grigio); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <img src="logo.jpg" alt="Scuola Sacra Famiglia" />
+    <div class="titolo">
+      <h1>Centro Anti-Alibi</h1>
+      <p>Dalla lamentela all'azione · Scuola Sacra Famiglia</p>
+    </div>
+  </header>
+
+  <div class="stepper" id="stepper"></div>
+
+  <!-- HOME -->
+  <section class="schermata visibile" id="home">
+    <div class="card">
+      <div class="hero">
+        <h2>Smetti di restare nel problema.</h2>
+        <p class="lead">Tutti, almeno una volta, ci nascondiamo dietro una frase per non affrontare la fatica.
+        La chiamiamo <strong>cultura dell'alibi</strong>. Oggi proviamo a smontarla, un livello alla volta.</p>
+        <div class="frasi-alibi">
+          <span>"...ma è impossibile!"</span>
+          <span>"non ce la faccio"</span>
+          <span>"è troppa fatica"</span>
+          <span>"è colpa degli altri"</span>
+          <span>"non sono portato"</span>
+        </div>
+        <p class="lead">La perseveranza batte il talento. La fatica è la strada del successo.
+        Fallire è possibile — e serve. Pronto a scalare i 4 livelli?</p>
+      </div>
+      <div class="mappa-livelli" id="mappaLivelli"></div>
+      <div class="azioni" style="justify-content:center;">
+        <button class="btn-primary" id="btnInizia">Inizia il percorso →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVELLO (riempito da JS) -->
+  <section class="schermata" id="livello">
+    <div class="card" id="cardLivello"></div>
+  </section>
+
+  <!-- FINALE -->
+  <section class="schermata" id="finale">
+    <div class="card">
+      <div class="hero">
+        <h2>Hai scalato tutti i livelli! 🏔️</h2>
+        <p class="lead">Niente alibi: hai trasformato cinque scuse in cinque primi passi concreti.
+        Eccoli — questi sono i tuoi impegni di oggi.</p>
+      </div>
+      <div id="recap"></div>
+      <div class="azioni" style="justify-content:center;">
+        <button class="btn-ghost" id="btnRicomincia">Ricomincia da capo</button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="fine">
+    <div>Attività guidata in laboratorio · Scuola Sacra Famiglia</div>
+    <div class="docente"><button class="link-docente" id="btnDocente">modalità docente: sblocca tutti i livelli</button></div>
+  </footer>
+
+</div>
+
+<script>
+/* ============================================================
+   DATI — i video sono ospitati su Dropbox (link ?raw=1 per
+   la riproduzione in pagina). Per aggiungere i video mancanti
+   (salto, mappa) basta inserire un nuovo oggetto nell'array
+   "video" del livello giusto.
+   ============================================================ */
+const LIVELLI = [
+  {
+    n: 1,
+    etichetta: "Livello 1",
+    titolo: "Non è impossibile",
+    alibi: "“...ma è impossibile!”",
+    intro: "Quante volte “impossibile” è solo una parola che ci diamo prima ancora di provarci? Il limite, spesso, ce lo mettiamo noi.",
+    video: [
+      { titolo: "Nessuno gli ha detto che era impossibile",
+        desc: "Un bambino sposta un peso enorme. Non sapeva di non poterlo fare.",
+        src: "https://www.dropbox.com/scl/fi/br7kvli0ca8snaulvgonu/impossibile.mp4?rlkey=4pkew7mw488v42uht3ykcndi3&st=ijjxflon&raw=1" },
+      { titolo: "Velasco: bisogna saper giocare male",
+        desc: "Il grande allenatore Julio Velasco: anche quando le cose vanno male, niente alibi — si rende lo stesso.",
+        src: "https://www.dropbox.com/scl/fi/808nytrwd98ncf5q1ir4t/velasco.mp4?rlkey=l42bxjfszudl9vf9okc0rww04&st=18y3rotf&raw=1" }
+    ],
+    sfida: "Pensa a una cosa che oggi hai già etichettato come “impossibile”. Qual è il primo passo, piccolissimo, che puoi fare per provarci davvero?"
+  },
+  {
+    n: 2,
+    etichetta: "Livello 2",
+    titolo: "Non mollare mai",
+    alibi: "“non ce la faccio, mi arrendo”",
+    intro: "Si fallisce davvero solo in un caso: quando si smette di provarci. Cadere fa parte del gioco; restare a terra no.",
+    video: [
+      { titolo: "Continua a provarci",
+        desc: "Un bambino si allena con tutto se stesso. Come lo spieghi a chi smette al primo ostacolo?",
+        src: "https://www.dropbox.com/scl/fi/73rhbfkmz7m5qbjhntqr5/bambino.mp4?rlkey=xaiy0ecmxgrnu34pwg6idnsmh&st=e3m8uqfl&raw=1" }
+      /* TODO: aggiungere "salto.mp4" qui quando arriva il link
+         { titolo: "Fallisci solo se smetti di provarci", desc: "...", src: "..." } */
+    ],
+    sfida: "C'è qualcosa che hai mollato perché “troppo difficile”? Scrivi un piccolo passo per riprovarci, oggi."
+  },
+  {
+    n: 3,
+    etichetta: "Livello 3",
+    titolo: "Disciplina e fatica",
+    alibi: "“è troppa fatica, non ho voglia”",
+    intro: "Dietro ogni risultato che ammiriamo c'è disciplina, costanza e ore di lavoro che non si vedono. La fatica è la strada, non un ostacolo.",
+    video: [
+      { titolo: "Michael Phelps: la dedizione totale",
+        desc: "Il nuotatore più vincente di sempre. Dietro le medaglie, anni di sacrificio quotidiano.",
+        src: "https://www.dropbox.com/scl/fi/q1exbz3bptfzidxrxno0s/phelps.mp4?rlkey=61tl782kvsytb524w8njqih86&st=ry4q1uqg&raw=1" },
+      { titolo: "Ossessione per ciò che conta",
+        desc: "Quando un obiettivo ti sta davvero a cuore, trovi l'energia per allenarti ogni giorno.",
+        src: "https://www.dropbox.com/scl/fi/ryg2qkenjyv1phvfhgzug/ossessione.mp4?rlkey=h35eudkfdli01tgw5fgmf2jrs&st=eylp1qbo&raw=1" }
+      /* TODO: aggiungere "mappa.mp4" qui quando arriva il link
+         { titolo: "100% Disciplina, Ossessione, Focus", desc: "...", src: "..." } */
+    ],
+    sfida: "Scegli un obiettivo che hai. Qual è il “piccolo allenamento” che puoi ripetere ogni giorno per avvicinarti?"
+  },
+  {
+    n: 4,
+    etichetta: "Livello 4",
+    titolo: "Esci dal tuo problema",
+    alibi: "“è colpa degli altri / da solo non ce la faccio”",
+    intro: "Smettere di lamentarsi vuol dire anche alzare lo sguardo: a volte la cosa più forte è aiutare qualcun altro ad arrivare al traguardo.",
+    video: [
+      { titolo: "Maratona di Boston: portarlo al traguardo",
+        desc: "Un runner rinuncia al proprio tempo per sostenere un avversario in difficoltà.",
+        src: "https://www.dropbox.com/scl/fi/8bytzxqp5t259pv510nbq/corsa1.mp4?rlkey=rfj3v9n29lzmsaqvs27lsri7s&st=g5gvg5xe&raw=1" },
+      { titolo: "La storia di Robson De Oliveira",
+        desc: "Il racconto del gesto: cosa conta davvero quando arrivi al traguardo.",
+        src: "https://www.dropbox.com/scl/fi/u4n8h97ucd14lrnb8g0v7/corsa2.mp4?rlkey=ykq5bvmd5uu5i6bn35ja236lp&st=dx56hkit&raw=1" },
+      { titolo: "Quel gesto: la catena umana",
+        desc: "Insieme si supera ciò che da soli sembrava impossibile.",
+        src: "https://www.dropbox.com/scl/fi/pxv0ytnpdkpyuyiqiobj1/solidarieta.mp4?rlkey=25zrwl1w16jizw1dol74x6sr9&st=3dnkjn30&raw=1" }
+    ],
+    sfida: "A chi, intorno a te, potresti dare una mano oggi invece di pensare solo al tuo problema? Scrivi un'azione concreta."
+  }
+];
+
+/* ============================================================
+   STATO (salvato nel browser del singolo Mac)
+   ============================================================ */
+const KEY = "antialibi_v1";
+function caricaStato() {
+  try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; }
+}
+function salvaStato(s) { localStorage.setItem(KEY, JSON.stringify(s)); }
+let stato = caricaStato();
+if (typeof stato.sbloccati !== "number") stato.sbloccati = 1; // livelli accessibili (1..4)
+if (!stato.risposte) stato.risposte = {};                     // { "1": "testo", ... }
+if (typeof stato.completati !== "number") stato.completati = 0;
+
+let livelloCorrente = 0; // indice 0-based; -1 = home
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+const el = (id) => document.getElementById(id);
+
+function mostraSchermata(idVisibile) {
+  ["home", "livello", "finale"].forEach(id => el(id).classList.toggle("visibile", id === idVisibile));
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function renderStepper() {
+  const cont = el("stepper");
+  cont.innerHTML = "";
+  LIVELLI.forEach((lv, i) => {
+    if (i > 0) {
+      const line = document.createElement("div");
+      line.className = "step-line" + (stato.completati >= i ? " fatto" : "");
+      cont.appendChild(line);
+    }
+    const node = document.createElement("div");
+    const fatto = stato.completati >= lv.n;
+    const attivo = livelloCorrente === i;
+    const disponibile = (lv.n <= stato.sbloccati);
+    node.className = "step-node" + (fatto ? " fatto" : "") + (attivo ? " attivo" : "") + (disponibile && !attivo ? " disponibile" : "");
+    node.innerHTML = `<div class="step-bubble">${fatto ? "✓" : lv.n}</div><div class="step-label">${lv.titolo}</div>`;
+    if (disponibile) node.onclick = () => apriLivello(i);
+    cont.appendChild(node);
+  });
+}
+
+function renderMappaHome() {
+  const cont = el("mappaLivelli");
+  cont.innerHTML = "";
+  LIVELLI.forEach(lv => {
+    const d = document.createElement("div");
+    d.className = "mini-livello";
+    d.innerHTML = `<div class="n">${lv.etichetta}</div><h4>${lv.titolo}</h4><p>${lv.alibi}</p>`;
+    cont.appendChild(d);
+  });
+}
+
+function renderLivello(i) {
+  const lv = LIVELLI[i];
+  const card = el("cardLivello");
+  const rispostaSalvata = stato.risposte[lv.n] || "";
+  const videoHtml = lv.video.map(v => `
+    <div class="video-blocco">
+      <h3>${v.titolo}</h3>
+      <p class="desc">${v.desc}</p>
+      <video controls preload="metadata" playsinline src="${v.src}"></video>
+    </div>`).join("");
+
+  const ultimo = (i === LIVELLI.length - 1);
+  card.innerHTML = `
+    <span class="badge-tema">${lv.etichetta} di ${LIVELLI.length}</span>
+    <h2 class="tema">${lv.titolo}</h2>
+    <div class="alibi">${lv.alibi}</div>
+    <p class="intro-tema">${lv.intro}</p>
+    ${videoHtml}
+    <div class="sfida">
+      <h3>La tua sfida</h3>
+      <p>${lv.sfida}</p>
+      <textarea id="rispostaSfida" placeholder="Scrivi qui il tuo primo passo concreto...">${rispostaSalvata}</textarea>
+    </div>
+    <div class="azioni">
+      <button class="btn-ghost" id="btnHome">← Torna alla mappa</button>
+      <button class="btn-primary" id="btnAvanti" disabled>${ultimo ? "Completa il percorso 🏁" : "Prossimo livello →"}</button>
+    </div>`;
+
+  const textarea = el("rispostaSfida");
+  const btnAvanti = el("btnAvanti");
+  const aggiorna = () => { btnAvanti.disabled = textarea.value.trim().length < 3; };
+  textarea.addEventListener("input", () => { stato.risposte[lv.n] = textarea.value; salvaStato(stato); aggiorna(); });
+  aggiorna();
+
+  el("btnHome").onclick = () => { livelloCorrente = -1; renderStepper(); mostraSchermata("home"); };
+  btnAvanti.onclick = () => completaLivello(i);
+}
+
+function apriLivello(i) {
+  livelloCorrente = i;
+  renderLivello(i);
+  renderStepper();
+  mostraSchermata("livello");
+}
+
+function completaLivello(i) {
+  const lv = LIVELLI[i];
+  if (stato.completati < lv.n) stato.completati = lv.n;
+  if (stato.sbloccati < lv.n + 1) stato.sbloccati = Math.min(LIVELLI.length, lv.n + 1);
+  salvaStato(stato);
+  if (i === LIVELLI.length - 1) { mostraFinale(); }
+  else { apriLivello(i + 1); }
+}
+
+function mostraFinale() {
+  livelloCorrente = -1;
+  const recap = el("recap");
+  recap.innerHTML = "";
+  LIVELLI.forEach(lv => {
+    const r = (stato.risposte[lv.n] || "").trim();
+    if (!r) return;
+    const d = document.createElement("div");
+    d.className = "recap-item";
+    d.innerHTML = `<div class="q">${lv.titolo} — ${lv.alibi}</div><div class="a">${escapeHtml(r)}</div>`;
+    recap.appendChild(d);
+  });
+  renderStepper();
+  mostraSchermata("finale");
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+}
+
+/* ============================================================
+   EVENTI GLOBALI
+   ============================================================ */
+el("btnInizia").onclick = () => apriLivello(Math.min(stato.sbloccati, LIVELLI.length) - 1);
+
+el("btnRicomincia").onclick = () => {
+  if (!confirm("Vuoi azzerare tutto e ricominciare il percorso?")) return;
+  stato = { sbloccati: 1, risposte: {}, completati: 0 };
+  salvaStato(stato);
+  livelloCorrente = -1;
+  renderStepper();
+  mostraSchermata("home");
+};
+
+el("btnDocente").onclick = () => {
+  stato.sbloccati = LIVELLI.length;
+  salvaStato(stato);
+  renderStepper();
+  alert("Modalità docente: tutti i livelli sono ora accessibili dalla barra in alto.");
+};
+
+/* AVVIO */
+renderMappaHome();
+renderStepper();
+mostraSchermata("home");
+</script>
+</body>
+</html>
